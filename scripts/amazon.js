@@ -1,10 +1,10 @@
-import {cart} from '../data/cart.js';
-import {products} from '../data/products.js'
+import { cart, addToCart } from "../data/cart.js";
+import { products } from "../data/products.js";
 
-let productsHTML = '';
+let productsHTML = "";
 
-products.forEach((product)=>{
-    productsHTML += `
+products.forEach((product) => {
+  productsHTML += `
 
         <div class="product-container">
           <div class="product-image-container">
@@ -50,45 +50,31 @@ products.forEach((product)=>{
             Added
           </div>
 
-          <button class="add-to-cart-button button-primary js-add-to-cart" data-product-id="${product.id}">
+          <button class="add-to-cart-button button-primary js-add-to-cart" data-product-id="${
+            product.id
+          }">
             Add to Cart
           </button>
         </div>
     `;
-})
+});
 
+document.querySelector(".js-products-grid").innerHTML = productsHTML;
 
-document.querySelector('.js-products-grid').innerHTML = productsHTML;
+function updateCartQuantity() {
+  let cartQuantity = 0;
 
-document.querySelectorAll('.js-add-to-cart').forEach((button) => {
-    
-    button.addEventListener('click', () => {
-        const productId = button.dataset.productId;
-        
-        let matchingItem;
+  cart.forEach((cartItem) => {
+    cartQuantity += cartItem.quantity;
+  });
 
-        cart.forEach((item) => {
-            if (productId === item.productId) {
-                matchingItem = item;
-            }
-        });
-        
-        if (matchingItem) {
-            matchingItem.quantity += 1;
-        } else {
-            cart.push({
-                productId: productId,
-                quantity: 1
-        });
-        }
+  document.querySelector(".js-cart-quantity").innerHTML = cartQuantity;
+}
 
-        let cartQuantity = 0;
-
-        cart.forEach((item) => {
-          cartQuantity += item.quantity;
-        });
-
-        document.querySelector('.js-cart-quantity')
-          .innerHTML = cartQuantity;
-    });
+document.querySelectorAll(".js-add-to-cart").forEach((button) => {
+  button.addEventListener("click", () => {
+    const productId = button.dataset.productId;
+    addToCart(productId);
+    updateCartQuantity();
+  });
 });
